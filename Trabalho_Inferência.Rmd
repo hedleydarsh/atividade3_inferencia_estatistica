@@ -1,0 +1,396 @@
+---
+#title: "Atividade Avaliativa III"
+#author: 
+#  - Hedley Lima Cunha
+#  - Ernandes Guedes Moura
+#  - Poliane Santos Macedo
+#  - Sirléia Lucena Rodrigues
+date: '`r Sys.Date()`'
+output: 
+  pdf_document:
+    keep_tex: true
+    number_sections: true
+    latex_engine: xelatex 
+fontsize: 12pt
+geometry: "left=3cm, right=2cm, top=3.0cm, bottom=2cm"
+header-includes:
+  - \usepackage{fontspec}
+  - \setmainfont{Times New Roman}
+  - \usepackage[T1]{fontenc}
+  - \usepackage[utf8]{inputenc}
+  - \usepackage[portuges]{babel}
+  - \usepackage{amsmath}
+  - \usepackage{amsfonts}
+  - \usepackage{amssymb}
+  - \usepackage{setspace}
+  - \usepackage{graphicx}
+  - \usepackage{float}
+  - \usepackage{caption}
+  - \usepackage{indentfirst}
+  - \usepackage{listings}
+  - \usepackage{apalike}
+  - \setlength{\parindent}{1.5cm}
+  - \lstset{basicstyle=\ttfamily\footnotesize,breaklines=true, breakatwhitespace=true, breakautoindent=true, prebreak=\mbox{\textcolor{red}{$\hookleftarrow$}}, postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}}
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancyhf{}
+  - \fancyhead[R]{\thepage}
+  - \usepackage{titlesec}
+  - \titleformat{\chapter}[display]
+      {\normalfont\bfseries}{}{0pt}{\Huge}
+  - \renewcommand{\indexname}{Índice}
+  - \usepackage{booktabs}
+  - \usepackage{microtype}
+  - \tolerance=1
+  - \emergencystretch=\maxdimen
+  - \hyphenpenalty=10000
+  - \hbadness=10000
+  - \usepackage{fvextra}
+  - \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+  - \usepackage{makecell}
+---
+
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+\begin{titlepage}
+\centering
+\includegraphics[width=0.5\textwidth]{dted_logo.jpg}\par\vspace{1.0 cm}
+{\scshape\LARGE Universidade Federal do Maranhão \par}
+\vspace{0.05cm}
+{\scshape\Large Especialização em Análise de Dados e Inteligência Artificial \par}
+\vspace{0.8cm}
+{\huge\bfseries Atividade III:  Análise Comparativa das Taxas Educacionais entre Redes de Ensino no Brasil: Públicas versus Privadas \par}
+\vspace{0.8cm}
+{\Large\itshape
+Disciplina: Inferência Estatística \par
+Professora: Alcione Miranda dos Santos \par
+}
+\vspace{0.7cm}
+\begin{flushleft}
+{\Large\itshape
+Autores: \par
+\vspace{0.01cm} % Diminuir o espaço entre "Autores" e o primeiro nome
+Ernandes Guedes Moura \par
+\vspace{0.05cm} % Diminuir o espaço entre os nomes
+Hedley Lima Cunha \par
+\vspace{0.01cm} % Diminuir o espaço entre os nomes
+Poliane Santos Macedo Carvalho \par
+\vspace{0.01cm} % Diminuir o espaço entre os nomes
+Sirléia Lucena Rodrigues \par
+}
+\end{flushleft}
+\vfill
+
+\vspace{1.2cm} % Espaço adicional entre os nomes dos autores e "Fortaleza dos Nogueiras - MA"
+
+{\Large\textbf{Fortaleza dos Nogueiras - MA} \par}
+\vspace{0.3cm} % Espaço entre "Fortaleza dos Nogueiras - MA" e a data
+{\large \today\par}
+
+\end{titlepage}
+
+\fancypagestyle{plain}{
+\fancyhf{}
+\fancyhead[R]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+}
+
+\fancypagestyle{no-number}{
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[C]{}
+}
+
+\thispagestyle{no-number}
+\newpage
+
+\tableofcontents
+\newpage
+
+
+\setstretch{1.5} 
+
+# Introdução {#introdução}
+
+A educação é um dos pilares fundamentais para o desenvolvimento individual e social, sendo essencial para a formação de cidadãos e para o progresso econômico de um país. No Brasil, há um debate contínuo e acalorado sobre as diferenças no desempenho escolar entre alunos de escolas públicas e privadas[^1][^2]. Estudos anteriores têm mostrado resultados variados e muitas vezes contraditórios[^3]. Este relatório busca contribuir para essa discussão através de uma análise rigorosa de dados educacionais e a aplicação de métodos estatísticos robustos para avaliar as diferenças no desempenho escolar entre essas duas redes de ensino.
+
+
+# Metodologia {#metodologia}
+Para realizar a análise comparativa do desempenho escolar entre escolas públicas e privadas, adotamos a metodologia CRISP-DM (Cross-Industry Standard Process for Data Mining), que é uma abordagem amplamente utilizada para projetos de mineração de dados. Esta metodologia proporciona um framework estruturado para entender os dados, prepará-los para análise, aplicar modelos estatísticos e interpretar os resultados[^5].
+
+## Entendimento do Negócio
+
+Nesta etapa, buscamos compreender o contexto e os objetivos do projeto:\
+
+- **Objetivo**: Comparar o desempenho escolar de alunos de escolas públicas e privadas no Brasil.\
+- **Perguntas-chave**:
+  - Há diferenças significativas nas taxas de aprovação, reprovação e abandono entre escolas públicas e privadas?
+  
+## Entendimento dos Dados
+### 2.2 Entendimento dos Dados
+
+Os dados utilizados neste estudo foram obtidos do *Base dos Dados* ([Base dos Dados](https://basedosdados.org/dataset/63f1218f-c446-4835-b746-f109a338e3a1?table=cd65b1d2-45e8-432b-afe8-c3a706addbe8)), que contém diversas informações incluindo taxa de aprovação, reprovação e abandono dos etudantes, categorizadas por tipo de rede de ensino (estadual, federal, municipal, privada, pública e total)[^4]. 
+
+
+```{r}
+
+# Carregar os dados
+dados = read.csv("brasil.csv",sep=",")
+dim(dados) # Dimensão dos dados
+```
+
+# Preparação dos Dados
+A preparação dos dados é uma etapa crucial que envolve limpeza, transformação e seleção de dados relevantes para a análise. Para este estudo, realizamos a seguinte preparação:
+
+- **Seleção de Colunas:** Selecionamos e renomeamos as colunas de interesse: rede, taxa_aprovacao_em_3_ano, taxa_reprovacao_em_3_ano e taxa_abandono_em_3_ano.
+
+
+```{r ,message=FALSE}
+library(dplyr)
+library(knitr)
+# Selecionar e renomear as colunas de interesse
+df <- dados %>%
+  select(rede, taxa_aprovacao_em_3_ano, taxa_reprovacao_em_3_ano, 
+         taxa_abandono_em_3_ano)
+
+
+# Visualizar as primeiras linhas do DataFrame resultante
+head(df) %>%
+  kable()
+```
+## Verificar dados ausentes
+```{r}
+# Verificar se há NAs
+contagem_na <- colSums(is.na(df))
+cat("Contagem de NAs por coluna:\n")
+print(paste(names(contagem_na), ": ", contagem_na))
+```
+
+
+# Modelagem
+Nesta fase, aplicamos técnicas estatísticas para analisar os dados e testar hipóteses.
+
+## Análise Descritiva
+
+Inicialmente, realizamos uma estatística descritiva das taxas de aprovação, reprovação e abondono por rede de ensino:
+```{r,message=FALSE}
+library(kableExtra)
+# Selecionar e renomear as colunas de interesse
+df2 <- dados %>%
+  select(
+    Rede = rede,
+    `Taxa de Aprovação no 3º Ano` = taxa_aprovacao_em_3_ano,
+    `Taxa de Reprovação no 3º Ano` = taxa_reprovacao_em_3_ano,
+    `Taxa de Abandono no 3º Ano` = taxa_abandono_em_3_ano
+  )
+
+
+# Estatística descritiva (média) de cada taxa por rede de ensino
+estatisticas_descritivas <- df2 %>%
+  group_by(Rede) %>%
+  summarise(
+    `Taxa Média de Aprovação` = mean(`Taxa de Aprovação no 3º Ano`, na.rm = TRUE),
+    `Taxa Média  de Reprovação` = mean(`Taxa de Reprovação no 3º Ano`, na.rm = TRUE),
+    `TaxaMédia de Abandono` = mean(`Taxa de Abandono no 3º Ano`, na.rm = TRUE)
+  )
+
+# # Visualizar as estatísticas descritivas
+# estatisticas_descritivas %>%
+#   kable()
+
+# Gerar a tabela com título usando kableExtra
+estatisticas_descritivas %>%
+  kable() %>%
+  kable_styling(full_width = FALSE) %>%
+  add_header_above(c(" " = 1, "Médias das Taxas por Rede de Ensino" = 3))
+```
+A tabela apresentada revela diferenças marcantes entre as redes de ensino. As escolas privadas se destacam com a maior média de aprovação (97.24%), enquanto as escolas públicas apresentam a menor média (88.03%). Essa disparidade é também evidente nas taxas de reprovação e abandono: as escolas privadas têm as menores taxas (1.94% e 0.82%, respectivamente), enquanto as públicas exibem taxas significativamente mais altas (5.81% e 6.15%, respectivamente).
+
+
+### Análise por Rede
+- **Rede Estadual**:\
+**Aprovação**: Média de 87.91%, abaixo da média nacional (89.07%).\
+**Reprovação**: Taxa de 5.78%, similar à média nacional (5.35%).\
+**Abandono**: Taxa de 6.31%, acima da média nacional (5.57%).
+
+- **Rede Federal**:\
+**Aprovação**: Média de 91.59%, a mais alta entre as redes, superando a média nacional em 3.68%.\
+**Reprovação**: Taxa de 6.94%, acima da média nacional (5.35%).\
+**Abandono**: Taxa de 1.47%, a menor entre as redes, bem abaixo da média nacional (5.57%).
+
+- **Rede Municipal**:\
+**Aprovação**: Média de 91.47%, segunda mais alta entre as redes, superando a média nacional em 2.56%.
+**Reprovação**: Taxa de 3.84%, a menor entre as redes, bem abaixo da média nacional (5.35%).
+**Abandono**: Taxa de 4.69%, inferior à média nacional (5.57%).\
+
+- **Rede Privada**:\
+**Aprovação**: Média de 97.24%, a mais alta entre todas as redes, superando a média nacional em 8.17%.
+**Reprovação**: Taxa de 1.94%, a menor entre as redes, bem abaixo da média nacional (5.35%).
+**Abandono**: Taxa de 0.82%, a menor entre todas as redes, consideravelmente abaixo da média nacional (5.57%).
+
+- **Rede Pública**:\
+**Aprovação**: Média de 88.03%, a menor entre as redes, abaixo da média nacional em 1.04%.
+**Reprovação**: Taxa de 5.81%, similar à média nacional (5.35%).
+**Abandono**: Taxa de 6.15%, acima da média nacional (5.57%).
+
+
+## Análise gráfica
+
+Os gráficos de barras abaixo ilustram as diferenças nas taxas de aprovação, reprovação e abandono no terceiro ano entre diferentes tipos de rede de ensino.
+
+```{r, message=FALSE}
+
+# Carregar pacotes
+library(ggplot2)
+
+# Gráfico de barras da taxa de aprovação em 3º ano por tipo de rede de ensino
+ggplot(df, aes(x = rede, y = taxa_aprovacao_em_3_ano, fill = rede)) +
+  geom_bar(stat = "identity") +
+  theme_minimal() +
+  labs(title = "Taxa de Aprovação em 3º Ano por Tipo de Rede de Ensino",
+       x = "Rede de Ensino",
+       y = "Taxa de Aprovação em 3º Ano") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Gráfico de barras da taxa de reprovação em 3º ano por tipo de rede de ensino
+ggplot(df, aes(x = rede, y = taxa_reprovacao_em_3_ano, fill = rede)) +
+  geom_bar(stat = "identity") +
+  theme_minimal() +
+  labs(title = "Taxa de Reprovação em 3º Ano por Tipo de Rede de Ensino",
+       x = "Rede de Ensino",
+       y = "Taxa de Reprovação em 3º Ano") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Gráfico de barras da taxa de abandono em 3º ano por tipo de rede de ensino
+ggplot(df, aes(x = rede, y = taxa_abandono_em_3_ano, fill = rede)) +
+  geom_bar(stat = "identity") +
+  theme_minimal() +
+  labs(title = "Taxa de Abandono em 3º Ano por Tipo de Rede de Ensino",
+       x = "Rede de Ensino",
+       y = "Taxa de Abandono em 3º Ano") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Além dos gráficos de barras, vamos incluir boxplots para visualizar a distribuição completa dos dados.
+```{r, message=FALSE}
+# Boxplot para análise detalhada
+ggplot(df, aes(x = rede, y = taxa_aprovacao_em_3_ano, fill = rede)) +
+  geom_boxplot() +
+  theme_minimal() +
+  labs(title = "Distribuição da Taxa de Aprovação em 3º Ano por Tipo de Rede de Ensino",
+       x = "Rede de Ensino", y = "Taxa de Aprovação em 3º Ano") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggplot(df, aes(x = rede, y = taxa_reprovacao_em_3_ano, fill = rede)) +
+  geom_boxplot() +
+  theme_minimal() +
+  labs(title = "Distribuição da Taxa de Reprovação em 3º Ano por Tipo de Rede de Ensino",
+       x = "Rede de Ensino", y = "Taxa de Reprovação em 3º Ano") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggplot(df, aes(x = rede, y = taxa_abandono_em_3_ano, fill = rede)) +
+  geom_boxplot() +
+  theme_minimal() +
+  labs(title = "Distribuição da Taxa de Abandono em 3º Ano por Tipo de Rede de Ensino",
+       x = "Rede de Ensino", y = "Taxa de Abandono em 3º Ano") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Os gráficos destacam claramente as disparidades nas taxas educacionais entre diferentes tipos de rede de ensino. Escolas privadas e redes federal e municipal mostram-se mais eficazes em manter altas taxas de aprovação e baixas taxas de reprovação e abandono. Por outro lado, as redes públicas estaduais e municipais enfrentam desafios significativos, refletidos em taxas mais baixas de aprovação e mais altas de reprovação e abandono.
+
+# Definição das Hipóteses {#definição-das-hipóteses}
+
+Nesta etapa, definimos as hipóteses a serem testadas:\
+
+- **Hipótese Nula (H0):** Não há diferença significativa nas taxas de aprovação, reprovação e abandono entre escolas públicas e privadas.
+- **Hipótese Alternativa (H1):** Existe uma diferença significativa nas taxas de aprovação, reprovação e abandono entre escolas públicas e privadas.
+
+
+# Teste de Hipóteses {#teste-de-hipóteses}
+
+Realizamos testes estatísticos para verificar a validade das hipóteses definidas. O teste t produziu um valor p (p-value). Para tomada de decisâo compara-se o p-value com um nível de significância padrão ($\alpha = 0.05$):\
+
+- Se $p < 0.05$: Rejeitamos a hipótese nula (H0), indicando que existe uma diferença significativa entre as médias das taxas de aprovação.
+- Se $p ≥ 0.05$: Não rejeitamos a hipótese nula, indicando que não há uma diferença significativa entre as médias das taxas de aprovação.\
+```{r}
+# Teste t para comparar a taxa de aprovação entre escolas privadas e públicas
+privadas <- df %>% filter(rede == "privada")
+publicas <- df %>% filter(rede == "publica")
+
+test_aprovacao<- t.test(privadas$taxa_aprovacao_em_3_ano, publicas$taxa_aprovacao_em_3_ano)
+
+# Função para tomada de decisão
+tomada_decisao <- function(teste) {
+  if (teste$p.value < 0.05) {
+    "Rejeitar H0: Diferença significativa entre  as médias"
+  } else {
+    "Não rejeitar H0: Não há diferença significativa entre as médias"
+  }
+}
+
+# Aplicar a fução
+tomada_decisao(test_aprovacao)
+```
+
+Com base nos dados fornecidos e no teste t realizado, podemos rejeitar a hipótese nula de que não há diferença na taxa média de aprovação entre escolas privadas e públicas. Há forte evidência de que a diferença verdadeira nas médias não é zero. Isso sugere que a rede de ensino (privada ou pública) influencia significativamente as taxas de aprovação.
+```{r}
+
+test_reprovacao<-t.test(privadas$taxa_reprovacao_em_3_ano, publicas$taxa_reprovacao_em_3_ano)
+# Aplicar a fução
+tomada_decisao(test_reprovacao)
+```
+O resultado do teste t indica que:
+
+Existe uma diferença significativa entre as médias de reprovação das duas redes. A taxa média de reprovação nas escolas privadas (1.94%) é consideravelmente menor do que nas escolas públicas (5.81%).\
+
+Portanto, o valor p extremamente baixo (menor que 2.2e-16) do teste t indica que essa diferença nas taxas de reprovação provavelmente não ocorreu por acaso.
+```{r}
+test_abadono<-t.test(privadas$taxa_abandono_em_3_ano, publicas$taxa_abandono_em_3_ano)
+# Aplicar a fução
+tomada_decisao(test_abadono)
+```
+
+Portanto, existe diferença significativa entre as taxas médias de abandono entre as escolas públicas e privadas.
+
+# Discussão dos Resultados {#discussão-dos-resultados}
+A análise comparativa das taxas de aprovação, reprovação e abandono entre escolas públicas e privadas revela diferenças significativas que impactam diretamente o panorama educacional no Brasil.
+
+## Taxas de Aprovação
+As escolas privadas se destacam com a maior taxa média de aprovação (97.24%), seguidas pelas redes federal (91.59%) e municipal (91.47%). Em contraste, as redes estadual (87.91%) e pública (88.03%) apresentam taxas mais baixas. Essa disparidade reflete diferentes estratégias pedagógicas, investimentos e condições de ensino entre os setores público e privado.
+
+## Taxas de Reprovação
+As escolas privadas também exibem a menor taxa média de reprovação (1.94%), enquanto as redes pública (5.81%) e estadual (5.78%) têm taxas mais altas. A reprovação mais baixa nas escolas privadas sugere uma melhor adaptação aos métodos de ensino ou suporte adicional oferecido aos alunos.
+
+## Taxas de Abandono
+O cenário de abandono segue um padrão semelhante, com as escolas privadas apresentando a menor taxa média (0.82%), enquanto as redes pública (6.15%) e estadual (6.31%) enfrentam taxas significativamente mais altas. O abandono escolar pode estar relacionado a diversos fatores, incluindo qualidade de ensino, suporte socioemocional e condições socioeconômicas dos alunos.
+
+# Conclusão {#conclusão}
+Os dados analisados corroboram a hipótese de que existem diferenças substanciais no desempenho escolar entre as redes pública e privada no Brasil. As escolas privadas geralmente apresentam melhores resultados em termos de taxas de aprovação, reprovação e abandono, o que pode indicar uma vantagem em recursos, infraestrutura e gestão educacional. Esses resultados sugerem que políticas voltadas para a melhoria das escolas públicas poderiam considerar as práticas bem-sucedidas observadas nas escolas privadas.
+
+
+# Referências {#referências}
+
+Franco, C., & Menezes-Filho, N. A. (2013). Desigualdade de desempenho entre escolas públicas e privadas no Brasil: evidências a partir dos microdados da Prova Brasil. *Nova Economia*, 23(3), 507-536. Disponível em: [Nova Economia](https://www.scielo.br/j/neco/a/x6DLSt9vxW7y4bPLjsKJ7cb/).
+
+Firpo, S. P., & Pieri, R. (2018). Desempenho escolar e escolha de escolas: uma análise de regressão descontínua para o Brasil. *Economia Aplicada*, 22(4), 145-172. Disponível em: [Economia Aplicada](https://www.scielo.br/j/ecoa/a/5qKVPhTPX3t7R57487t5YsP/?lang=pt).
+
+Zagury, T., & Damasceno, E. (2018). Análise do desempenho escolar na avaliação SAEB 2015. Disponível em: [ResearchGate](https://www.researchgate.net/publication/329064320_ANALISE_DO_DESEMPENHO_ESCOLAR_NA_AVALIACAO_SAEB_2015).
+
+Base dos Dados. Desempenho Escolar por Rede de Ensino no Brasil (3º ano do Ensino Fundamental). Rio de Janeiro: Base dos Dados, 2024. Recuperado de: https://basedosdados.org/dataset/63f1218f-c446-4835-b746-f109a338e3a1?table=cd65b1d2-45e8-432b-afe8-c3a706addbe8. Acesso em: 22 jun. 2024.
+
+Schröer, C., Kruse, F., & Gómez, J. M. (2021). A Systematic Literature Review on Applying CRISP-DM Process Model. *Procedia Computer Science*, 181, 526-534. Disponível em: [ResearchGate](https://www.researchgate.net/publication/349527794_A_Systematic_Literature_Review_on_Applying_CRISP-DM_Process_Model/fulltext/6099ce2c92851c490fceaedb/A-Systematic-Literature-Review-on-Applying-CRISP-DM-Process-Model.pdf).
+
+[^1]: Franco, C., & Menezes-Filho, N. A. (2013). Desigualdade de desempenho entre escolas públicas e privadas no Brasil: evidências a partir dos microdados da Prova Brasil. *Nova Economia*, 23(3), 507-536. Disponível em: [Nova Economia](https://www.scielo.br/j/neco/a/x6DLSt9vxW7y4bPLjsKJ7cb/).
+
+[^2]: Firpo, S. P., & Pieri, R. (2018). Desempenho escolar e escolha de escolas: uma análise de regressão descontínua para o Brasil. *Economia Aplicada*, 22(4), 145-172. Disponível em: [Economia Aplicada](https://www.scielo.br/j/ecoa/a/5qKVPhTPX3t7R57487t5YsP/?lang=pt).
+
+[^3]: Zagury, T., & Damasceno, E. (2018). Análise do desempenho escolar na avaliação SAEB 2015. Disponível em: [ResearchGate](https://www.researchgate.net/publication/329064320_ANALISE_DO_DESEMPENHO_ESCOLAR_NA_AVALIACAO_SAEB_2015).
+
+[^4]: Base dos Dados. Desempenho Escolar por Rede de Ensino no Brasil (3º ano do Ensino Fundamental). Rio de Janeiro: Base dos Dados, 2024. Recuperado de: https://basedosdados.org/dataset/63f1218f-c446-4835-b746-f109a338e3a1?table=cd65b1d2-45e8-432b-afe8-c3a706addbe8. Acesso em: 22 jun. 2024.
+
+[^5]: Schröer, C., Kruse, F., & Gómez, J. M. (2021). A Systematic Literature Review on Applying CRISP-DM Process Model. *Procedia Computer Science*, 181, 526-534. Disponível em: [ResearchGate](https://www.researchgate.net/publication/349527794_A_Systematic_Literature_Review_on_Applying_CRISP-DM_Process_Model/fulltext/6099ce2c92851c490fceaedb/A-Systematic-Literature-Review-on-Applying-CRISP-DM-Process-Model.pdf).
+
